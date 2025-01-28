@@ -1,7 +1,7 @@
 
 # Disinformation Analyzer Chrome Extension
 
-This Chrome extension leverages a multi-agent disinformation analysis model to assess the content of web pages, providing a score that indicates the level of disinformation.
+This Chrome extension leverages a multi-agent disinformation analysis model to assess the content of web pages, providing an assesment that indicates the level of disinformation and allows you to analyze single text separately.
 
 ## Features
 - Real-time analysis of web content.
@@ -14,7 +14,7 @@ This Chrome extension leverages a multi-agent disinformation analysis model to a
 ## Requirements
 - Google Chrome (version 89 or higher)
 - Internet connection to access the API for the model
-- GroqAPI KEY to access the model. (REQUIRE AT: https://console.groq.com/keys)
+- Groq's API key to access the model. (REQUIRE AT: https://console.groq.com/keys)
 
 ---
 
