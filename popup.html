@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Disinformation Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 10px;
+            width: 600px;
+            min-width: 300px;
+            max-width: 800px;
+            height: auto;
+            background-color: #f9f9f9;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            text-align: center;
+            position: relative;
+            box-sizing: border-box;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        h2 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 100%;
+            text-align: center;
+            justify-content: center;
+        }
+
+        h2 img {
+            width: 32px;
+            height: 32px;
+        }
+
+        #settingsIcon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 24px;
+            padding: 5px;
+            width: auto;
+            transition: color 0.3s ease;
+            z-index: 1000;
+        }
+
+        .close-button:hover {
+            color: #333;
+        }
+
+        #settingsForm {
+            display: none;
+            margin-top: 20px;
+            width: 100%;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        #settingsForm input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 10px;
+            box-sizing: border-box;
+        }
+
+        #settingsForm button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            width: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        #settingsForm button:hover {
+            background-color: #45a049;
+        }
+
+        .apiKeyLink {
+            margin-bottom: 10px;
+            font-size: 12px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .apiKeyLink:hover {
+            text-decoration: underline;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 300px;
+            margin: 10px auto;
+        }
+
+        .action-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            width: 100%;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .action-button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .action-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        #manualAnalysisSection {
+            width: 100%;
+            max-width: 100%;
+            margin: 10px 0;
+            padding: 0 10px;
+            box-sizing: border-box;
+            display: none;
+        }
+
+        textarea {
+            width: 100%;
+            max-width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 14px;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+
+        .output {
+            display: none;
+            width: calc(100% - 20px);
+            margin: 10px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .output strong {
+            color: #4CAF50;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .output span {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        #loading {
+            display: none;
+            margin: 10px auto;
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid #4CAF50;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #resizeHandle {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0px;
+            height: 0px;
+            background-color: #4CAF50;
+            cursor: sw-resize;
+        }
+        #downloadPreanalysisBtn{
+            font-size: 24px;
+            color: #4CAF50;
+            margin-top: 10px;
+            cursor: pointer;
+            display: none;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #downloadRawBtn {
+            font-size: 24px;
+            color: #4CAF50;
+            margin-top: 10px;
+            cursor: pointer;
+            display: none;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+   #preanalysisOutput .preanalysis-section {
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    #preanalysisOutput .preanalysis-section h3 {
+        font-size: 16px;
+        color: #4CAF50;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #e0e0e0;
+    }
+
+    #preanalysisOutput .preanalysis-section ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    #preanalysisOutput .preanalysis-section ul li {
+        font-size: 14px;
+        color: #333;
+        margin-bottom: 12px;
+        padding-left: 0;
+        line-height: 1.5;
+    }
+
+    #preanalysisOutput .preanalysis-section ul li strong {
+        color: #2196F3;
+        font-weight: 600;
+        display: inline;
+        
+        #errorMessage {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ffcdd2;
+            font-size: 14px;
+            display: none;
+        }
+        .formatted-output {
+            width: 100%;
+            text-align: left;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        
+        .formatted-output .section {
+            margin-bottom: 20px;
+        }
+        
+        .formatted-output .section h3 {
+            color: #4CAF50;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .formatted-output .section p {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+        }
+        
+        .formatted-output .section ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            padding-left: 10px;
+        }
+        
+        .formatted-output .section ul li {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        
+    </style>
+</head>
+<body>
+    <button class="close-button" id="closeButton">
+        <i class="fas fa-times"></i>
+    </button>
+    
+    <h2>
+        <img src="icon.png" alt="Disinformation Analyzer Icon">
+        Disinformation Analyzer
+    </h2>
+    
+    <img id="settingsIcon" src="gear-icon.png" alt="Settings Icon">
+    
+    <div id="settingsForm">
+        <a href="https://console.groq.com/docs/api-reference" target="_blank" class="apiKeyLink">Request API Key</a>
+        <input type="text" id="apiKeyInput" placeholder="Insert here your Groq API key">
+        <button id="saveApiKeyBtn">Save API Key</button>
+    </div>
+
+    <div class="button-container">
+        <button id="manualAnalysisBtn" class="action-button">Manual Analysis</button>
+    </div>
+
+    <div id="manualAnalysisSection">
+        <textarea id="textInput" placeholder="Insert text to analyze..."></textarea>
+        <div id="errorMessage">The text need to contain at least 50 words.</div>
+        <button id="analyzeBtn" class="action-button">Analyze</button>
+    </div>
+
+    <div id="loading"></div>
+    <div class="output" id="output">
+        <div id="preanalysisOutput">
+            <strong>Preanalysis Results</strong>
+            <div id="preanalysis" class="preanalysis-section"></div>
+            <!-- Aggiungi il pulsante di download per la preanalisi -->
+            <i id="downloadPreanalysisBtn" class="fas fa-download" title="Download Preanalysis Output" style="display: none;"></i>
+        </div>
+        <div id="analysisResults">
+            <strong>Disinformation Level:</strong> <span id="score"></span><br>
+            <strong>Sentiment:</strong> <span id="sentiment"></span><br>
+            <strong>Overall Assessment of Disinformation:</strong> <span id="overallassessmentofdisinformation"></span><br>
+            <strong>Overall Assessment of Authenticity:</strong> <span id="overallassessmentofauthenticity"></span><br>
+            <strong>Summary of Key Findings:</strong> <span id="summaryofkeyfindings"></span><br>
+            <strong>Final Verdict:</strong> <span id="finalverdict"></span><br>
+            <strong>Confidence Score:</strong> <span id="confidencescore"></span><br>
+        </div>
+        <div id="wholeOutput" style="display: none;"></div>
+        <div id="formattedOutput" class="formatted-output"></div>
+        <i id="downloadRawBtn" class="fas fa-download" title="Download Raw Output"></i>
+    </div>
+
+    <div id="resizeHandle"></div>
+    <script src="popup.js"></script>
+</body>
+</html>
